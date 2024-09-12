@@ -38,7 +38,8 @@
                         Properties properties = new Properties();
                         try (InputStream input = new FileInputStream("src/main/resources/app.properties")) {
                             properties.load(input);
-                        } catch (IOException e) {
+                            Class.forName(properties.getProperty("postgres.driver"));
+                        } catch (IOException | ClassNotFoundException e) {
                             throw new RuntimeException(e);
                         }
 
