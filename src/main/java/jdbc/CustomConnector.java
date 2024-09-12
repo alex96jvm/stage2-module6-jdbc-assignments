@@ -16,7 +16,8 @@ public class CustomConnector {
         try (InputStream input = getClass().getClassLoader().getResourceAsStream(
                 "app.properties")) {
             properties.load(input);
-        } catch (IOException e) {
+            Class.forName("org.postgresql.Driver");
+        } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
