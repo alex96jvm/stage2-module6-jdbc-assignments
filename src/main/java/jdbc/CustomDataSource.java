@@ -3,6 +3,8 @@
     import javax.sql.DataSource;
     import lombok.Getter;
     import lombok.Setter;
+
+    import java.io.FileInputStream;
     import java.io.IOException;
     import java.io.InputStream;
     import java.io.PrintWriter;
@@ -21,7 +23,6 @@
         private final String url;
         private final String name;
         private final String password;
-        private static Properties properties;
 
         private CustomDataSource(String driver, String url, String name, String password) {
             this.driver = driver;
@@ -34,9 +35,8 @@
             if (instance == null) {
                 synchronized (CustomDataSource.class) {
                     if (instance == null) {
-                        properties = new Properties();
-                        try (InputStream input = CustomDataSource.class.getClassLoader().getResourceAsStream(
-                                "app.properties")) {
+                        Properties properties = new Properties();
+                        try (InputStream input = new FileInputStream("src/main/resources/app.properties")) {
                             properties.load(input);
                         } catch (IOException e) {
                             throw new RuntimeException(e);

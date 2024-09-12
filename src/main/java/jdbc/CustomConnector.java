@@ -1,5 +1,6 @@
 package jdbc;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -12,8 +13,7 @@ public class CustomConnector {
 
     public CustomConnector() {
         properties = new Properties();
-        try (InputStream input = getClass().getClassLoader().getResourceAsStream(
-                "app.properties")) {
+        try (InputStream input = new FileInputStream("src/main/resources/app.properties")) {
             properties.load(input);
         } catch (IOException e) {
             throw new RuntimeException(e);
