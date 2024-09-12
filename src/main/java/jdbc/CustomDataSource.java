@@ -36,7 +36,7 @@
                 synchronized (CustomDataSource.class) {
                     if (instance == null) {
                         Properties properties = new Properties();
-                        try (InputStream input = new FileInputStream("src/main/resources/app.properties")) {
+                        try (InputStream input = CustomDataSource.class.getResourceAsStream("/app.properties")) {
                             properties.load(input);
                             Class.forName(properties.getProperty("postgres.driver"));
                         } catch (IOException | ClassNotFoundException e) {
