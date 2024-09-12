@@ -12,7 +12,7 @@ public class CustomConnector {
 
     public CustomConnector() {
         properties = new Properties();
-        try (InputStream input = CustomConnector.class.getResourceAsStream("/app.properties")) {
+        try (InputStream input = CustomConnector.class.getResourceAsStream("app.properties")) {
             properties.load(input);
             Class.forName(properties.getProperty("driver"));
         } catch (IOException | ClassNotFoundException e) {
