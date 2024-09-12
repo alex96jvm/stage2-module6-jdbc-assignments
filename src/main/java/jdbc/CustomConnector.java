@@ -14,15 +14,15 @@ public class CustomConnector {
         properties = new Properties();
         try (InputStream input = CustomConnector.class.getResourceAsStream("/app.properties")) {
             properties.load(input);
-            Class.forName(properties.getProperty("postgres.driver"));
+            Class.forName(properties.getProperty("driver"));
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
 
     public Connection getConnection(String url) {
-        String user = properties.getProperty("postgres.name");
-        String password = properties.getProperty("postgres.password");
+        String user = properties.getProperty("name");
+        String password = properties.getProperty("password");
 
         try {
             return DriverManager.getConnection(url, user, password);

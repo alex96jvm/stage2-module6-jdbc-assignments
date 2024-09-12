@@ -36,15 +36,15 @@
                         Properties properties = new Properties();
                         try (InputStream input = CustomDataSource.class.getResourceAsStream("/app.properties")) {
                             properties.load(input);
-                            Class.forName(properties.getProperty("postgres.driver"));
+                            Class.forName(properties.getProperty("driver"));
                         } catch (IOException | ClassNotFoundException e) {
                             throw new RuntimeException(e);
                         }
 
-                        String driver = properties.getProperty("postgres.driver");
-                        String url = properties.getProperty("postgres.url");
-                        String name = properties.getProperty("postgres.name");
-                        String password = properties.getProperty("postgres.password");
+                        String driver = properties.getProperty("driver");
+                        String url = properties.getProperty("url");
+                        String name = properties.getProperty("name");
+                        String password = properties.getProperty("password");
                         instance = new CustomDataSource(driver, url, name, password);
                     }
                 }
