@@ -12,12 +12,10 @@ public class CustomConnector {
 
     public CustomConnector() {
         properties = new Properties();
-
         try (InputStream input = getClass().getClassLoader().getResourceAsStream(
                 "app.properties")) {
             properties.load(input);
-            Class.forName("org.postgresql.Driver");
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }

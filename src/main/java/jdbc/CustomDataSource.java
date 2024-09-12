@@ -21,6 +21,7 @@
         private final String url;
         private final String name;
         private final String password;
+        private static Properties properties;
 
         private CustomDataSource(String driver, String url, String name, String password) {
             this.driver = driver;
@@ -33,8 +34,7 @@
             if (instance == null) {
                 synchronized (CustomDataSource.class) {
                     if (instance == null) {
-                        Properties properties = new Properties();
-
+                        properties = new Properties();
                         try (InputStream input = CustomDataSource.class.getClassLoader().getResourceAsStream(
                                 "app.properties")) {
                             properties.load(input);
