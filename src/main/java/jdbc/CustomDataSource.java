@@ -4,10 +4,8 @@
     import lombok.Getter;
     import lombok.Setter;
     import java.io.IOException;
-    import java.io.InputStream;
     import java.io.PrintWriter;
     import java.sql.Connection;
-    import java.sql.DriverManager;
     import java.sql.SQLException;
     import java.sql.SQLFeatureNotSupportedException;
     import java.util.Properties;
@@ -22,7 +20,7 @@
         private final String name;
         private final String password;
 
-        private CustomDataSource(String driver, String url, String name, String password) {
+        private CustomDataSource(String driver, String url, String password, String name) {
             this.driver = driver;
             this.url = url;
             this.name = name;
@@ -34,18 +32,17 @@
                 synchronized (CustomDataSource.class) {
                     if (instance == null) {
                         Properties properties = new Properties();
-                        try (InputStream input = CustomDataSource.class.getResourceAsStream("/app.properties")) {
-                            properties.load(input);
-                            Class.forName(properties.getProperty("driver"));
+                        try {
+                            properties.load(CustomDataSource.class.getClassLoader().getResourceAsStream("app.properties"));
+                            String driver = properties.getProperty("postgres.driver");
+                            String url = properties.getProperty("postgres.url");
+                            String name = properties.getProperty("postgres.password");
+                            String password = properties.getProperty("postgres.name");
+                            instance = new CustomDataSource(driver, url, name, password);
+                            Class.forName(properties.getProperty("postgres.driver"));
                         } catch (IOException | ClassNotFoundException e) {
                             throw new RuntimeException(e);
                         }
-
-                        String driver = properties.getProperty("driver");
-                        String url = properties.getProperty("url");
-                        String name = properties.getProperty("name");
-                        String password = properties.getProperty("password");
-                        instance = new CustomDataSource(driver, url, name, password);
                     }
                 }
             }
@@ -54,12 +51,12 @@
 
     @Override
     public Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(url, name, password);
+        return new CustomConnector().getConnection(url, name, password);
     }
 
     @Override
-    public Connection getConnection(String username, String password) throws SQLException {
-        return null;
+    public Connection getConnection(String user, String password) throws SQLException {
+        return new CustomConnector().getConnection(url, user, password);
     }
 
     @Override

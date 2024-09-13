@@ -26,19 +26,17 @@ public class SimpleJDBCRepository {
     private static final String findAllUserSQL = "SELECT * FROM myusers";
 
     public Long createUser(User user) {
-        try (Connection connection = new CustomConnector().getConnection("jdbc:postgresql://localhost:5432/myfirstdb");
+        try (Connection connection = CustomDataSource.getInstance().getConnection();
             PreparedStatement ps = connection.prepareStatement(createUserSQL, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, user.getFirstName());
             ps.setString(2, user.getLastName());
             ps.setInt(3, user.getAge());
             ps.executeUpdate();
-
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 rs.next();
                 return rs.getLong("id");
             }
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -47,11 +45,10 @@ public class SimpleJDBCRepository {
     public User findUserById(Long userId) {
         User user;
 
-        try (Connection connection = CustomDataSource.getInstance().getConnection();
+        try (Connection connection = CustomDataSource.getInstance().getConnection("postgres", "123");
             PreparedStatement ps = connection.prepareStatement(findUserByIdSQL)){
 
             ps.setLong(1, userId);
-
             try (ResultSet rs = ps.executeQuery()) {
                 rs.next();
                 user = new User(
@@ -69,11 +66,10 @@ public class SimpleJDBCRepository {
     public User findUserByName(String userName) {
         User user;
 
-        try (Connection connection = CustomDataSource.getInstance().getConnection();
+        try (Connection connection = CustomDataSource.getInstance().getConnection("postgres", "123");
             PreparedStatement ps = connection.prepareStatement(findUserByNameSQL)){
 
             ps.setString(1, userName);
-
             try (ResultSet rs = ps.executeQuery()) {
                 rs.next();
                 user = new User(
@@ -110,10 +106,7 @@ public class SimpleJDBCRepository {
     }
 
     public User updateUser(User user) {
-        try (Connection connection = new CustomConnector().getConnection(
-                "jdbc:postgresql://localhost:5432/myfirstdb",
-                "postgres",
-                "123");
+        try (Connection connection = CustomDataSource.getInstance().getConnection();
             PreparedStatement ps = connection.prepareStatement(updateUserSQL)) {
 
             ps.setString(1, user.getFirstName());
