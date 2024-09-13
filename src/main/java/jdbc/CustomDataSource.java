@@ -29,21 +29,17 @@
 
         public static CustomDataSource getInstance() {
             if (instance == null) {
-                synchronized (CustomDataSource.class) {
-                    if (instance == null) {
-                        Properties properties = new Properties();
-                        try {
-                            properties.load(CustomDataSource.class.getClassLoader().getResourceAsStream("app.properties"));
-                            String driver = properties.getProperty("postgres.driver");
-                            String url = properties.getProperty("postgres.url");
-                            String name = properties.getProperty("postgres.password");
-                            String password = properties.getProperty("postgres.name");
-                            instance = new CustomDataSource(driver, url, name, password);
-                            Class.forName(properties.getProperty("postgres.driver"));
-                        } catch (IOException | ClassNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
+                Properties properties = new Properties();
+                try {
+                    properties.load(CustomDataSource.class.getClassLoader().getResourceAsStream("app.properties"));
+                    String driver = properties.getProperty("postgres.driver");
+                    String url = properties.getProperty("postgres.url");
+                    String name = properties.getProperty("postgres.password");
+                    String password = properties.getProperty("postgres.name");
+                    instance = new CustomDataSource(driver, url, name, password);
+                    Class.forName(properties.getProperty("postgres.driver"));
+                } catch (IOException | ClassNotFoundException e) {
+                    throw new RuntimeException(e);
                 }
             }
             return instance;
