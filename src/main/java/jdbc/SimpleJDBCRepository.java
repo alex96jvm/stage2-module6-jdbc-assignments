@@ -45,7 +45,7 @@ public class SimpleJDBCRepository {
     public User findUserById(Long userId) {
         User user;
 
-        try (Connection connection = CustomDataSource.getInstance().getConnection("postgres", "123");
+        try (Connection connection = CustomDataSource.getInstance().getConnection("postgres", "postgres");
             PreparedStatement ps = connection.prepareStatement(findUserByIdSQL)){
 
             ps.setLong(1, userId);
@@ -66,7 +66,7 @@ public class SimpleJDBCRepository {
     public User findUserByName(String userName) {
         User user;
 
-        try (Connection connection = CustomDataSource.getInstance().getConnection("postgres", "123");
+        try (Connection connection = CustomDataSource.getInstance().getConnection("postgres", "postgres");
             PreparedStatement ps = connection.prepareStatement(findUserByNameSQL)){
 
             ps.setString(1, userName);
