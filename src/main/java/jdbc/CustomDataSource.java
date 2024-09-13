@@ -3,12 +3,11 @@
     import javax.sql.DataSource;
     import lombok.Getter;
     import lombok.Setter;
-    import java.io.IOException;
     import java.io.PrintWriter;
     import java.sql.Connection;
     import java.sql.SQLException;
     import java.sql.SQLFeatureNotSupportedException;
-    import java.util.Properties;
+    import java.util.ResourceBundle;
     import java.util.logging.Logger;
 
     @Getter
@@ -29,30 +28,31 @@
 
         public static CustomDataSource getInstance() {
             if (instance == null) {
-                Properties properties = new Properties();
-                try {
-                    properties.load(CustomDataSource.class.getClassLoader().getResourceAsStream("app.properties"));
-                    String driver = properties.getProperty("postgres.driver");
-                    String url = properties.getProperty("postgres.url");
-                    String name = properties.getProperty("postgres.password");
-                    String password = properties.getProperty("postgres.name");
-                    instance = new CustomDataSource(driver, url, name, password);
-                    Class.forName(properties.getProperty("postgres.driver"));
-                } catch (IOException | ClassNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
+                ResourceBundle rb = ResourceBundle.getBundle("app");
+                instance = new CustomDataSource(rb.getString("postgres.driver"),
+                        rb.getString("postgres.url"),
+                        rb.getString("postgres.password"),
+                        rb.getString("postgres.name"));
             }
             return instance;
         }
 
     @Override
     public Connection getConnection() throws SQLException {
-        return new CustomConnector().getConnection(url, name, password);
+        try {
+            return new CustomConnector().getConnection(url, name, password);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public Connection getConnection(String user, String password) throws SQLException {
-        return new CustomConnector().getConnection(url, user, password);
+        try {
+            return new CustomConnector().getConnection(url, user, password);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
